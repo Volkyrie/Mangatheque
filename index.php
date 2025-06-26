@@ -15,7 +15,7 @@ if(is_array($match)) {
     $obj = new $controller();
 
     if(is_callable(array($obj, $action))) {
-        call_user_func_array(array($obj, $action), $match['params'])
+        call_user_func_array(array($obj, $action), $match['params']);
     }
 } else {
     http_response_code(404);
