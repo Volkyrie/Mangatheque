@@ -7,9 +7,14 @@ $router = new AltoRouter();
 $router->setBasePath('/mangatheque');
 
 $router->map( 'GET', '/', 'ControllerPage#homePage', 'homepage');
+$router->map( 'GET', '/user/[i:id]', 'ControllerUser#oneUserById', 'userpage');
+$router->map( 'GET', '/user/delete/[i:id]', 'ControllerUser#deleteUserById', 'userdelete');
 
 $match = $router->match();
 
+var_dump($match);
+
+die;
 if(is_array($match)) {
     list($controller, $action) = explode('#', $match['target']);
     $obj = new $controller();
