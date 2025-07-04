@@ -12,9 +12,6 @@ $router->map( 'GET', '/user/delete/[i:id]', 'ControllerUser#deleteUserById', 'us
 
 $match = $router->match();
 
-var_dump($match);
-
-die;
 if(is_array($match)) {
     list($controller, $action) = explode('#', $match['target']);
     $obj = new $controller();

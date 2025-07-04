@@ -14,13 +14,15 @@ class ControllerUser {
 
     public function deleteUserById(int $id) {
         $modelUser = new ModelUser();
-        $msg = $modelUser->deleteOneUserById($id);
-        if(!$user) {
-            http_response_code(204);
-            require './view/page/usernotdeleted.php';
-            exit;
+        $success = $modelUser->deleteOneUserById($id);
+
+        if(!$success) {
+            http_response_code(404);
+            $error = "Aucun user n'a été supprimé";
+        } else {
+            $message = "User supprimé";
         }
 
-        require './view/user/userdeleted.php';
+        header('Location: /mangatheque/');
     }
 }

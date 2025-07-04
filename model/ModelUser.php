@@ -23,12 +23,12 @@ class ModelUser extends Model {
         return $user ? new User($user) : NULL;
     }
 
-    public function deleteOneUserById(int $id) {
+    public function deleteOneUserById(int $id) : bool {
         $sql = "DELETE from user WHERE id=:id";
         $query = $this->getDb()->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
         $query->execute();
 
-        return "User was successfully deleted";
+        return $query->rowCount();
     }
 }
