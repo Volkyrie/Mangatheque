@@ -8,6 +8,8 @@ $router->setBasePath('/mangatheque');
 
 $router->map( 'GET', '/', 'ControllerPage#homePage', 'homepage');
 $router->map( 'GET', '/user/[i:id]', 'ControllerUser#oneUserById', 'userpage');
+$router->map( 'GET', '/user/update/[i:id]', 'ControllerUser#updateUserById', 'userupdate');
+$router->map( 'POST', '/user/update/[i:id]', 'ControllerUser#updateUserById', 'userupdated');
 $router->map( 'GET', '/user/delete/[i:id]', 'ControllerUser#deleteUserById', 'userdelete');
 
 $match = $router->match();

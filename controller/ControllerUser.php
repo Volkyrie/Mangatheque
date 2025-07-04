@@ -24,5 +24,29 @@ class ControllerUser {
         }
 
         header('Location: /mangatheque/');
+        exit;
+    }
+
+    public function updateUserById(int $id) {
+        $modelUser = new ModelUser();
+        if(isset($_POST['update'])) {
+            $success = $modelUser->updateOneUserById($id, trim($_POST['pseudo']), trim($_POST['email']), trim($_POST['password']));
+            if(!$success) {
+                http_response_code(404);
+                $error = "Aucun user n'a été mis à jour";
+            } else {
+                $message = "User mis à jour";
+            }
+            header('Location: /mangatheque/');
+            exit;
+        } else {
+            $user = $modelUser->getOneUserById($id);
+            if($user == NULL) {
+                $error = "Aucun user trouvé";
+                header('Location: /mangatheque/');
+                exit;
+            }
+            require './view/user/edituserpage.php';
+        }
     }
 }

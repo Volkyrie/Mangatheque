@@ -31,4 +31,17 @@ class ModelUser extends Model {
 
         return $query->rowCount();
     }
+
+    public function updateOneUserById(int $id, string $pseudo, string $email, string $password) : bool {
+        $sql = "UPDATE user 
+                SET pseudo=:pseudo, email=:email, password=:password 
+                WHERE id=:id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
+        $query->bindParam(':email', $email, PDO::PARAM_STR);
+        $query->bindParam(':password', $password, PDO::PARAM_STR);
+        
+        return $query->execute();
+    }
 }
