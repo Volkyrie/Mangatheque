@@ -3,7 +3,7 @@ $title = "Update manga {$id}";
 ob_start();
 ?>
 
-<form method="POST" action="<?= $id ?>">
+<form method="POST" action="/mangatheque/mangas/<?= $id ?>/edit">
     <label for="name">Name</label>
     <input type="text" name="name" id="name" value="<?= $manga->getName()?>"><br>
     <label for="author">Author</label>
@@ -15,7 +15,7 @@ ob_start();
     <label for="cover">Cover</label>
     <input type="text" name="cover" id="cover" value="<?= $manga->getCover()?>"><br>
     <label for="nbtomes">Number of tomes</label>
-    <input type="text" name="nbtomes" id="nbtomes" value="<?= $manga->getNb_tomes()?>"><br>
+    <input type="text" name="nb_tomes" id="nb_tomes" value="<?= $manga->getNb_tomes()?>"><br>
     <label for="publication">Publication date</label>
     <input type="date" name="publication" id="publication" value="<?= $manga->getPublished_at()->format('Y-m-d')?>"><br>
     <label for="category">Category</label>

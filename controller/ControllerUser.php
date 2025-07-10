@@ -30,11 +30,11 @@ class ControllerUser {
     public function updateUserById(int $id) {
         $modelUser = new ModelUser();
         if(isset($_POST['update'])) {
-            $author_id = $modelManga->searchAuthor(trim($_POST['author']));
-            $author_id = $modelManga->searchCategory(trim($_POST['author']));
-            $success = $modelUser->updateOneUserById($id, trim($_POST['pseudo']), trim($_POST['name']),
+            $author = $modelManga->searchAuthor();
+            $category = $modelManga->searchCategory(trim($_POST['category']));
+            $success = $modelUser->updateOneUserById($id, trim($_POST['cover']), trim($_POST['name']),
                         trim($_POST['synopsis']), trim($_POST['rating']), trim($_POST['publication']),
-                        $author_id, $category_id, trim($_POST['nbtomes']));
+                        trim($_POST['author']),trim($_POST['category']), trim($_POST['nbtomes']));
             if(!$success) {
                 http_response_code(404);
                 $error = "Aucun user n'a été mis à jour";

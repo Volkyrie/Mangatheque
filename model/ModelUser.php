@@ -23,6 +23,27 @@ class ModelUser extends Model {
         return $user ? new User($user) : NULL;
     }
 
+    public function createUser(string $pseudo, string $email, string $password) : bool {
+        $sql = "INSERT INTO user (pseudo, email, password, created_at) VALUES (:pseudo, :email, :password, NOW())";
+        $query = $this->getDb()->prepare($sql);
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        
+        $query->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
+        $query->bindParam(':email', $email, PDO::PARAM_STR);
+        $query->bindParam(':password', $passwordHash, PDO::PARAM_STR);
+        return $query->execute();
+    }
+
+    public function searchUser(string $email) : array {
+        $sql = "SELECT email, password FROM user WHERE email=:email";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':email', $email, PDO::PARAM_STR);
+        $query->execute();
+        $user = $query->fetch(PDO::FETCH_ASSOC);
+        return $user;
+    }
+
     public function deleteOneUserById(int $id) : bool {
         $sql = "DELETE from user WHERE id=:id";
         $query = $this->getDb()->prepare($sql);

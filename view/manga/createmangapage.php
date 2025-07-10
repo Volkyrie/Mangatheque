@@ -16,12 +16,12 @@ ob_start();
     <label for="cover">Cover</label>
     <input type="text" name="cover" id="cover" value=""><br>
     <label for="nb_tomes">Number of tomes</label>
-    <input type="text" name="nbtomes" id="nbtomes" value=""><br>
+    <input type="text" name="nb_tomes" id="nb_tomes" value=""><br>
     <label for="publication">Publication date</label>
     <input type="date" name="publication" id="publication" value=""><br>
     <label for="category">Category</label>
     <input type="text" name="category" id="category" value=""><br>
-    <button type="submit" name="update">Mettre à jour</button>
+    <button type="submit" name="create">Créer</button>
 </form>
 
 <?php

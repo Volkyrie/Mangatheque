@@ -22,28 +22,39 @@ class ControllerManga {
     }
 
     public function mangaStore(){
-        var_dump($_POST);
-        exit;
         $modelManga = new ModelManga();
-        if(isset($_POST['update'])) {
-            $name = $modelManga->trim($_POST['name']);
-            $name = $modelManga->trim($_POST['author']);
-            $synopsis = $modelManga->trim($_POST['synopsis']);
-            $rating = $modelManga->trim($_POST['rating']);
-            $cover = $modelManga->trim($_POST['cover']);
-            $nb_tomes = $modelManga->trim($_POST['nb_tomes']);
-            $publication = $modelManga->trim($_POST['publication']);
-            $category = $modelManga->trim($_POST['category']);
+        if(isset($_POST['create'])) {
+            $name = trim($_POST['name']);
+            $author = trim($_POST['author']);
+            $synopsis = trim($_POST['synopsis']);
+            $rating = $_POST['rating'];
+            $cover = trim($_POST['cover']);
+            $nb_tomes = $_POST['nb_tomes'];
+            $publication = $_POST['publication'];
+            $category = trim($_POST['category']);
 
             $manga = $modelManga->addManga($name, $author, $synopsis, $rating,
                     $cover, $nb_tomes, $publication, $category);
         }
+
+        header('Location: /mangatheque/mangas');
+        exit;
     }
 
     public function updateMangaById(int $id) {
         $modelManga = new ModelManga();
+
         if(isset($_POST['update'])) {
-            $success = $modelManga->updateOneMangaById($id, trim($_POST['pseudo']), trim($_POST['email']), trim($_POST['password']));
+            $name = trim($_POST['name']);
+            $author = trim($_POST['author']);
+            $synopsis = trim($_POST['synopsis']);
+            $rating = $_POST['rating'];
+            $cover = trim($_POST['cover']);
+            $nb_tomes = $_POST['nb_tomes'];
+            $publication = $_POST['publication'];
+            $category = trim($_POST['category']);
+            $success = $modelManga->updateOneMangaById($id, $name, $synopsis, $rating, $publication,
+                        $author,  $cover, $category, $nb_tomes);
             if(!$success) {
                 http_response_code(404);
                 $error = "Aucun manga n'a été mis à jour";

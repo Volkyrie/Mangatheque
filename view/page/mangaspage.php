@@ -2,6 +2,9 @@
 
 $title = "Liste des mangas";
 ob_start();
+?>
+<a href="mangas/create">Add a manga</a>
+<?php
 foreach($mangas as $manga) :
 ?>
 
@@ -9,7 +12,8 @@ foreach($mangas as $manga) :
     <img class="cover" src="./assets/covers/<?= $manga->getCover() ?>" alt="<?= $manga->getName() ?>">
     <h2><?= $manga->getName() ?></h2>
     <p>Nombre de tomes: <?= $manga->getNb_tomes() ?></p>
-    <p><a href="manga/<?= $manga->getId()?>">Plus d'info</a></p>
+    <p><a href="mangas/<?= $manga->getId()?>">Plus d'info</a></p>
+    <p><a href="mangas/<?= $manga->getId()?>/edit">Modifier</a></p>
 </div>
 
 <?php
