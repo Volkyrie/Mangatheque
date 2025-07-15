@@ -25,6 +25,7 @@ $router->map( 'POST', '/mangas/[i:id]/edit', 'ControllerManga#updateMangaById', 
 //LOGIN REGISTER LOGOUT
 $router->map( 'GET|POST', '/register', 'ControllerAuth#register', 'register');
 $router->map( 'GET|POST', '/login', 'ControllerAuth#login', 'login');
+$router->map( 'GET', '/logout', 'ControllerAuth#logout', 'logout');
 
 $match = $router->match();
 

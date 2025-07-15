@@ -41,8 +41,10 @@ class ControllerAuth {
 
             $modelUser = new ModelUser();
             $user = $modelUser->searchUser($email);
-            if(password_verify($password, $user['password'])) {
+            if($user && password_verify($password, $user->getPassword())) {
                 $_SESSION['success'] = "Vous êtes connecté.";
+                $_SESSION['id'] = $user->getId();
+                $_SESSION['pseudo'] = $user->getPseudo();
                 header('Location: /mangatheque/mangas');
                 exit;
             } else {
@@ -52,5 +54,12 @@ class ControllerAuth {
             }
         }
         require __DIR__ . '/../view/auth/login.php';
+    }
+
+    public function logout() {
+        session_unset();
+        session_destroy();
+        header('Location: /mangatheque/login');
+        exit;
     }
 }

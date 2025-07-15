@@ -35,13 +35,14 @@ class ModelUser extends Model {
         return $query->execute();
     }
 
-    public function searchUser(string $email) : array {
+    public function searchUser(string $email) : ?User {
         $sql = "SELECT email, password FROM user WHERE email=:email";
         $query = $this->getDb()->prepare($sql);
         $query->bindParam(':email', $email, PDO::PARAM_STR);
         $query->execute();
         $user = $query->fetch(PDO::FETCH_ASSOC);
-        return $user;
+
+        return $query->rowCount() > 0 ? new User($user) : null;
     }
 
     public function deleteOneUserById(int $id) : bool {
