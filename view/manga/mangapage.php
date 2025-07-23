@@ -5,7 +5,7 @@ ob_start();
 ?>
 
 <div class="manga">
-    <img class="cover" src="../assets/covers/<?= $manga->getCover() ?>" alt="<?= $manga->getName() ?>">
+    <img class="cover" src="/Mangatheque/assets/covers/<?= $manga->getCover() ?>" alt="<?= $manga->getName() ?>">
     <h2><?= $manga->getName() ?></h2>
     <p>Number of tomes: <?= $manga->getNb_tomes() ?></p>
     <p>Rating: <?= $manga->getRating() ?> /10 ⭐ </p>

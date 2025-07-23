@@ -21,6 +21,7 @@ $router->map( 'POST', '/mangas/store', 'ControllerManga#mangaStore', 'mangastore
 $router->map( 'GET', '/mangas/[i:id]', 'ControllerManga#oneMangaById', 'mangapage');
 $router->map( 'GET', '/mangas/[i:id]/edit', 'ControllerManga#updateMangaById', 'mangaupdate');
 $router->map( 'POST', '/mangas/[i:id]/edit', 'ControllerManga#updateMangaById', 'mangaupdated');
+$router->map( 'GET', '/mangas/[i:id]/sort', 'ControllerManga#sortMangaByCategory', 'mangasort');
 
 //LOGIN REGISTER LOGOUT
 $router->map( 'GET|POST', '/register', 'ControllerAuth#register', 'register');

@@ -2,10 +2,12 @@
 class ModelManga extends Model {
     public function getMangas() : array {
         $sql = "SELECT manga.id, manga.cover, manga.name, manga.rating,
-                manga.nb_tomes, author.name AS author, category.name AS category,
+                manga.nb_tomes, author.name AS author, GROUP_CONCAT(category.name) AS category,
                 manga.published_at, manga.synopsis FROM manga
                 INNER JOIN author ON manga.author_id=author.author_id
-                INNER JOIN category ON manga.category_id=category.category_id";
+                INNER JOIN mangas_categories ON manga.id=mangas_categories.manga_id
+                INNER JOIN category ON category.category_id=mangas_categories.category_id
+                GROUP BY manga.id";
         $query = $this->getDb()->query($sql);
 
         $arrayMangas = [];
@@ -18,13 +20,32 @@ class ModelManga extends Model {
 
     public function getOneMangaById(int $id) : ?Manga {
         $sql = "SELECT manga.id, manga.cover, manga.name, manga.rating,
-                manga.nb_tomes, author.name AS author, category.name AS category,
+                manga.nb_tomes, author.name AS author, GROUP_CONCAT(category.name) AS category,
                 manga.published_at, manga.synopsis FROM manga
                 INNER JOIN author ON manga.author_id=author.author_id
-                INNER JOIN category ON manga.category_id=category.category_id
-                WHERE id=:id";
+                INNER JOIN mangas_categories ON manga.id=mangas_categories.manga_id
+                INNER JOIN category ON category.category_id=mangas_categories.category_id
+                WHERE manga.id=:id GROUP BY manga.id";
         $query = $this->getDb()->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
+        $query->execute();
+        
+        $manga = $query->fetch(PDO::FETCH_ASSOC);
+
+
+        return $manga ? new Manga($manga) : NULL;
+    }
+
+    public function getOneMangaByName(str $name) : ?Manga {
+        $sql = "SELECT manga.id, manga.cover, manga.name, manga.rating,
+                manga.nb_tomes, author.name AS author, GROUP_CONCAT(category.name) AS category,
+                manga.published_at, manga.synopsis FROM manga
+                INNER JOIN author ON manga.author_id=author.author_id
+                INNER JOIN mangas_categories ON manga.id=mangas_categories.manga_id
+                INNER JOIN category ON category.category_id=mangas_categories.category_id
+                WHERE name=:name";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':name', $name, PDO::PARAM_INT);
         $query->execute();
         
         $manga = $query->fetch(PDO::FETCH_ASSOC);
@@ -34,8 +55,6 @@ class ModelManga extends Model {
 
     public function addManga($name, $author, $synopsis, $rating, $cover, $nb_tomes, $publication, $category) {
         if(($author_id = $this->searchAuthor($author)) == 0) {
-            // var_dump($category_id);
-            // exit;
             $sql = "INSERT INTO author (name) VALUES (:name)";
             $query = $this->getDb()->prepare($sql);
             $query->bindParam(':name', $author, PDO::PARAM_STR);
@@ -50,11 +69,10 @@ class ModelManga extends Model {
             $query->execute();
             $category_id = $this->searchCategory($category);
         }
-
         
         $sql = "INSERT INTO manga (name, author_id, synopsis, rating, cover, nb_tomes,
-                published_at, category_id) VALUES (:name, :author_id, :synopsis, :rating,
-                :cover, :nb_tomes, :published_at, :category_id)";
+                published_at) VALUES (:name, :author_id, :synopsis, :rating,
+                :cover, :nb_tomes, :published_at";
         $query = $this->getDb()->prepare($sql);
         $query->bindParam(':name', $name, PDO::PARAM_STR);
         $query->bindParam(':author_id', $author_id, PDO::PARAM_INT);
@@ -63,9 +81,17 @@ class ModelManga extends Model {
         $query->bindParam(':cover', $cover, PDO::PARAM_STR);
         $query->bindParam(':nb_tomes', $nb_tomes, PDO::PARAM_INT);
         $query->bindParam(':published_at', $publication, PDO::PARAM_STR);
-        $query->bindParam(':category_id', $category_id, PDO::PARAM_INT);
         
-        return $query->execute();
+        if($query->execute()) {
+            $manga_id = $this->getOneMangaByName($name)['id'];
+            $sql = "INSERT INTO mangas_categories (manga_id, category_id) VALUES (:manga_id, :category_id)";
+            $query = $this->getDb()->prepare($sql);
+            $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+            $query->bindParam(':category_id', $category_id, PDO::PARAM_INT); 
+        
+            return $query->execute();
+        }
+        return NULL;
     }
 
     public function searchAuthor(string $author) : int {
@@ -135,5 +161,14 @@ class ModelManga extends Model {
         return $query->execute();
     }
 
-    
+    public function getOneCategoryById($id) {
+        $sql = "SELECT category_id, name FROM category WHERE category_id=:category_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':category_id', $id, PDO::PARAM_INT);
+        $query->execute();
+
+        $category = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $category;
+    }
 }

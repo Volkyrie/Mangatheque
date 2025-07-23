@@ -3,6 +3,7 @@ class ControllerManga {
     public function mangaList() {
         $modelManga = new ModelManga();
         $mangas = $modelManga->getMangas();
+
         require './view/page/mangaspage.php';
     }
 
@@ -72,5 +73,12 @@ class ControllerManga {
             }
             require './view/manga/editmangapage.php';
         }
+    }
+
+    public function sortMangaByCategory(int $id) {
+        $modelManga = new ModelManga();
+        $mangas = $modelManga->getMangas();
+        $category = $modelManga->getOneCategoryById($id);
+        require './view/manga/sortmangapage.php';
     }
 }

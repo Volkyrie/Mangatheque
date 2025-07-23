@@ -8,9 +8,9 @@ foreach($users as $user) :
 <div class="user">
     <h2><?= $user->getPseudo() ?></h2>
     <p>Email: <?= $user->getEmail() ?></p>
-    <p><a href="user/<?= $user->getId()?>">Voir le user</a></p>
-    <p><a href="user/update/<?= $user->getId()?>">Modifier le user</a></p>
-    <p><a href="user/delete/<?= $user->getId()?>">Supprimer le user</a></p>
+    <p><a href="/Mangatheque/user/<?= $user->getId()?>">Voir le user</a></p>
+    <p><a href="/Mangatheque/user/update/<?= $user->getId()?>">Modifier le user</a></p>
+    <p><a href="/Mangatheque/user/delete/<?= $user->getId()?>">Supprimer le user</a></p>
 </div>
 
 <?php
