@@ -171,4 +171,20 @@ class ModelManga extends Model {
 
         return $category;
     }
+
+    public function userLikeMangaById(int $user_id, int $manga_id) : void {
+        $sql = "INSERT INTO likes (user_id, manga_id) VALUES (:user_id, :manga_id)";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+    }
+
+    public function userUnlikeMangaById(int $user_id, int $manga_id) : void {
+        $sql = "DELETE FROM likes WHERE user_id=:user_id AND manga_id=:manga_id)";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+    }
 }

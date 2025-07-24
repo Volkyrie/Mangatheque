@@ -81,4 +81,31 @@ class ControllerManga {
         $category = $modelManga->getOneCategoryById($id);
         require './view/manga/sortmangapage.php';
     }
+
+    public function test(int $id) {
+        $modelManga = new ModelManga();
+        $manga = $modelManga->oneMangaById($id);
+        $modelUser = new ModelUser();
+        $user = $modelUser->getOneUserById($_SESSION['id']);
+
+        require './view/manga/test.php';
+    }
+
+    public function like(int $id) {
+        $modelManga = new ModelManga();
+        $manga = $modelManga->oneMangaById($id);
+        $modelManga->userLikeMangaById($_SESSION['id'], $manga->getId());
+
+        header('Location: /mangatheque/mangas/'. $id .'/test');
+        exit;
+    }
+
+    public function unlike(int $id) {
+        $modelManga = new ModelManga();
+        $manga = $modelManga->oneMangaById($id);
+        $modelManga->userUnlikeMangaById($_SESSION['id'], $manga->getId());
+
+        header('Location: /mangatheque/mangas/'. $id .'/test');
+        exit;
+    }
 }

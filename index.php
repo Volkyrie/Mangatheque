@@ -23,6 +23,11 @@ $router->map( 'GET', '/mangas/[i:id]/edit', 'ControllerManga#updateMangaById', '
 $router->map( 'POST', '/mangas/[i:id]/edit', 'ControllerManga#updateMangaById', 'mangaupdated');
 $router->map( 'GET', '/mangas/[i:id]/sort', 'ControllerManga#sortMangaByCategory', 'mangasort');
 
+//LIKE TESTS
+$router->map( 'GET', '/mangas/[i:id]/test', 'ControllerManga#test', 'test');
+$router->map( 'GET', '/mangas/[i:id]/like', 'ControllerManga#like', 'like');
+$router->map( 'GET', '/mangas/[i:id]/unlike', 'ControllerManga#unlike', 'unlike');
+
 //LOGIN REGISTER LOGOUT
 $router->map( 'GET|POST', '/register', 'ControllerAuth#register', 'register');
 $router->map( 'GET|POST', '/login', 'ControllerAuth#login', 'login');
