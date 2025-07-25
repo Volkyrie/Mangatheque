@@ -9,6 +9,7 @@ class Manga {
     private DateTimeImmutable $published_at;
     private string $author = 'toto';
     private string $category = 'fantasy';
+    private int $likes = 0;
 
     public function __construct(array $datas) {
         $this->published_at = new \DateTimeImmutable();
@@ -96,5 +97,13 @@ class Manga {
 
     public function setPublished_at(string $published_at) : void {
         $this->published_at = new \DateTimeImmutable($published_at);
+    }
+
+    public function getLikes() : string {
+        return $this->likes;
+    }
+
+    public function setLikes(string $likes) : void {
+        $this->likes = $likes;
     }
 }

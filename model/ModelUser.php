@@ -36,7 +36,7 @@ class ModelUser extends Model {
     }
 
     public function searchUser(string $email) : ?User {
-        $sql = "SELECT email, password FROM user WHERE email=:email";
+        $sql = "SELECT id, email, password, created_at FROM user WHERE email=:email";
         $query = $this->getDb()->prepare($sql);
         $query->bindParam(':email', $email, PDO::PARAM_STR);
         $query->execute();

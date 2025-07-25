@@ -178,13 +178,107 @@ class ModelManga extends Model {
         $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
         $query->execute();
+
+        $sql = "UPDATE manga SET likes=(likes + 1) WHERE id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
     }
 
     public function userUnlikeMangaById(int $user_id, int $manga_id) : void {
-        $sql = "DELETE FROM likes WHERE user_id=:user_id AND manga_id=:manga_id)";
+        $sql = "DELETE FROM likes WHERE user_id=:user_id AND manga_id=:manga_id";
         $query = $this->getDb()->prepare($sql);
         $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
         $query->execute();
+
+        $sql = "UPDATE manga SET likes=(likes - 1) WHERE id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+    }
+
+    public function mangaLikedByUser(int $user_id, int $manga_id) {
+        $sql = "SELECT COUNT(user_id) FROM likes WHERE user_id=:user_id AND manga_id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $result['COUNT(user_id)'] == 0 ? false : true;
+    }
+
+    public function nbOfLikes(int $manga_id) {
+        $sql = "SELECT likes FROM manga WHERE id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+
+        $nbLikes = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $nbLikes['likes'];
+    }
+
+    public function getMangasByLikes() {
+        $sql = "SELECT manga.id, manga.cover, manga.name, manga.rating,
+                manga.nb_tomes, author.name AS author, GROUP_CONCAT(category.name) AS category,
+                manga.published_at, manga.synopsis, likes FROM manga
+                INNER JOIN author ON manga.author_id=author.author_id
+                INNER JOIN mangas_categories ON manga.id=mangas_categories.manga_id
+                INNER JOIN category ON category.category_id=mangas_categories.category_id
+                GROUP BY manga.id ORDER BY likes DESC";
+        $query = $this->getDb()->query($sql);
+
+        $arrayMangas = [];
+        while($manga = $query->fetch(PDO::FETCH_ASSOC)) {
+            $arrayMangas[] = new Manga($manga);
+        }
+
+        return $arrayMangas;
+    }
+
+    public function rateOneMangaById(int $user_id, int $manga_id, int $rating) {
+        if($this->searchOneRating($user_id, $manga_id) == false) {
+            $sql = "INSERT INTO users_ratings (user_id, manga_id, rating) VALUES (:user_id, :manga_id, :rating)";
+            $query = $this->getDb()->prepare($sql);
+            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+            $query->bindParam(':rating', $rating, PDO::PARAM_INT);
+            $query->execute();
+        } else {
+            $sql = "UPDATE users_ratings SET rating=:rating WHERE user_id=:user_id AND manga_id=:manga_id";
+            $query = $this->getDb()->prepare($sql);
+            $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+            $query->bindParam(':rating', $rating, PDO::PARAM_INT);
+            $query->execute();
+        }
+        
+        
+        $sql = "SELECT COUNT(rating), SUM(rating) FROM users_ratings WHERE manga_id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+        $nbRatings = $query->fetch(PDO::FETCH_ASSOC);
+        $newRating = $nbRatings['SUM(rating)'] / $nbRatings['COUNT(rating)'];
+
+        $sql = "UPDATE manga SET rating=:newRating WHERE id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':newRating', $newRating, PDO::PARAM_INT);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+    }
+
+    public function searchOneRating(int $user_id, int $manga_id) {
+        $sql = "SELECT COUNT(user_id) FROM users_ratings WHERE user_id=:user_id AND manga_id=:manga_id";
+        $query = $this->getDb()->prepare($sql);
+        $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $query->bindParam(':manga_id', $manga_id, PDO::PARAM_INT);
+        $query->execute();
+        $nbRatings = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $nbRatings['COUNT(user_id)'] == 0 ? false : true;
     }
 }

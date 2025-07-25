@@ -15,6 +15,8 @@ class ControllerManga {
             require './view/manga/manganotfound.php';
             exit;
         }
+        $isLiked = $modelManga->mangaLikedByUser($_SESSION['id'], $manga->getId());
+        $nbLikes = $modelManga->nbOfLikes($manga->getId());
         require './view/manga/mangapage.php';
     }
 
@@ -82,30 +84,35 @@ class ControllerManga {
         require './view/manga/sortmangapage.php';
     }
 
-    public function test(int $id) {
-        $modelManga = new ModelManga();
-        $manga = $modelManga->oneMangaById($id);
-        $modelUser = new ModelUser();
-        $user = $modelUser->getOneUserById($_SESSION['id']);
-
-        require './view/manga/test.php';
-    }
-
     public function like(int $id) {
         $modelManga = new ModelManga();
-        $manga = $modelManga->oneMangaById($id);
+        $manga = $modelManga->getOneMangaById($id);
         $modelManga->userLikeMangaById($_SESSION['id'], $manga->getId());
 
-        header('Location: /mangatheque/mangas/'. $id .'/test');
+        header('Location: /Mangatheque/mangas/'. $id);
         exit;
     }
 
     public function unlike(int $id) {
         $modelManga = new ModelManga();
-        $manga = $modelManga->oneMangaById($id);
+        $manga = $modelManga->getOneMangaById($id);
         $modelManga->userUnlikeMangaById($_SESSION['id'], $manga->getId());
 
-        header('Location: /mangatheque/mangas/'. $id .'/test');
+        header('Location: /Mangatheque/mangas/'. $id);
+        exit;
+    }
+
+    public function ranking() {
+        $modelManga = new ModelManga();
+        $mangas = $modelManga->getMangasByLikes();
+
+        require './view/manga/mangaranking.php';
+    }
+
+    public function rate(int $id) {
+        $modelManga = new ModelManga();
+        $manga = $modelManga->rateOneMangaById($_SESSION['id'], $id, $_GET['rate']);
+        header('Location: /Mangatheque/mangas/'. $id);
         exit;
     }
 }

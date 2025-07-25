@@ -3,7 +3,7 @@ class User {
     private int $id = 12;
     private string $pseudo = 'toto';
     private string $email = 'toto@gmail.com';
-    private string $password = '123456';
+    private string $password = 'test';
     private DateTimeImmutable $created_at;
 
     public function __construct(array $datas) {
